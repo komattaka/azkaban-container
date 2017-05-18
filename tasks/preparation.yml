@@ -1,0 +1,16 @@
+---
+# tasks/preparation.yml
+
+- name: Update apt packages
+  raw: "apt-get update"
+
+- name: Install ansible requirements
+  raw: "apt-get install -y python libpython2.7 python-apt aptitude"
+
+- name: Gathering Facts
+  setup:
+    gather_subset: all
+
+- name: Upgrade Packages
+  apt:
+    upgrade: yes
