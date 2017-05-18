@@ -1,0 +1,35 @@
+---
+# tasks/install.yml
+
+- name: Install requirements
+  apt:
+    name: "{{ item }}"
+    state: "latest"
+  with_flattened:
+    # ansible git module
+    - "python-git"
+    # azkaban
+    - "openjdk-8-jdk-headless"
+    - "gcc"
+    - "g++"
+
+- name: Git clone
+  git:
+    repo: "https://github.com/azkaban/azkaban.git"
+    dest: /opt/azkaban
+    version: master
+
+- name: Gradle build
+  shell: ./gradlew build -x test
+  args:
+    chdir: /opt/azkaban
+
+- name: Gradle install
+  shell: ./gradlew installDist
+  args:
+    chdir: /opt/azkaban
+
+- name: Change azkaban to foreground process
+  lineinfile:
+    dest: /opt/azkaban/azkaban-solo-server/build/install/azkaban-solo-server/bin/azkaban-solo-start.sh
+    line: "tail -f /dev/null"
