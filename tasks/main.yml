@@ -1,0 +1,8 @@
+---
+# tasks/main.yml
+
+- name: include preparation tasks
+  include: preparation.yml
+
+- name: include install tasks
+  include: install.yml
